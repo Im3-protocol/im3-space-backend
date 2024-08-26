@@ -1,0 +1,22 @@
+{
+  "env": {
+    "node": true,
+    "jest": true,
+    "es2020": true
+  },
+  "extends": ["airbnb-base", "plugin:jest/recommended", "plugin:security/recommended-legacy", "plugin:prettier/recommended"],
+  "plugins": ["jest", "security", "prettier"],
+  "parserOptions": {
+    "ecmaVersion": 2020
+  },
+  "rules": {
+    "no-console": "error",
+    "func-names": "off",
+    "no-underscore-dangle": "off",
+    "consistent-return": "off",
+    "jest/expect-expect": "off",
+    "security/detect-object-injection": "off",
+    "no-param-reassign": [2, { "props": false }],
+    "no-await-in-loop": "off"
+  }
+}
