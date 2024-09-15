@@ -1,55 +1,99 @@
-const { EgressClient, EncodedFileOutput } = require('livekit-server-sdk');
+/* eslint-disable no-console */
 const config = require('../config/config');
 
-const createEgressClient = () => {
-  return new EgressClient(config.apiKey, config.apiSecret, config.websocketUrl);
+let egressClientInstance = null;
+
+const createEgressClient = async () => {
+  if (!egressClientInstance) {
+    const { EgressClient } = await import('livekit-server-sdk');
+    egressClientInstance = new EgressClient(config.im3.websocketUrl, config.im3.apiKey, config.im3.apiSecret);
+  }
+  return egressClientInstance;
 };
 
-const listEgrees = async () => {
-  const egressClient = createEgressClient();
-  const res = await egressClient.listEgress();
-  return res;
+const outputFileName = (roomName) => {
+  const date = new Date();
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+  return `${roomName}-${day}-${month}-${year}`;
 };
 
-const startRecordComposite = async (roomName) => {
-  const egressClient = createEgressClient();
-
-  const fileOutput = new EncodedFileOutput({
-    filepath: 'tmp/room-composite-test.mp4',
-    output: {
-      // case: 's3',
-      // value: new S3Upload({
-      //     accessKey: 'aws-access-key',
-      //     secret:    'aws-access-secret',
-      //     region:    'aws-region',
-      //     bucket:    'my-bucket'
-      // }),
-    },
-  });
-
-  const info = await egressClient.startRoomCompositeEgress(
-    roomName,
-    {
-      file: fileOutput,
-    },
-    {
-      layout: 'speaker',
-      // uncomment to use your own templates
-      // customBaseUrl: 'https://my-template-url.com',
-    },
-  );
-  const egressID = info.egressId;
-  return egressID;
+const listEgrees = async (req, res) => {
+  try {
+    const egressClient = await createEgressClient();
+    const egressList = await egressClient.listEgress();
+    res.send(egressList);
+  } catch (error) {
+    console.error('Error occurred while listing egress services:', error);
+    res.status(500).send({ message: 'Server Error', error: error.message });
+  }
 };
 
-const stopRecordComposite = async (egressID) => {
-  const egressClient = createEgressClient();
-  const info = await egressClient.stopEgress(egressID);
-  return info;
+const startRecordComposite = async (req, res) => {
+  const { roomName } = req.params;
+  const { audioOnly, videoOnly, layout } = req.body;
+  try {
+    const { EncodedFileOutput } = await import('livekit-server-sdk');
+    const egressClient = await createEgressClient();
+    const fileName = outputFileName(roomName);
+
+    const fileOutput = new EncodedFileOutput({
+      filepath: `tmp/${fileName}.mp4`,
+    });
+
+    const info = await egressClient.startRoomCompositeEgress(
+      roomName,
+      { file: fileOutput },
+      { layout, audioOnly, videoOnly },
+    );
+    console.log(layout);
+    res.status(200).json({ egressId: info.egressId });
+  } catch (error) {
+    console.error('Error occurred while starting room composite egress:', error);
+    res.status(500).send({ message: 'Failed to start recording', error: error.message });
+  }
+};
+
+const stopRecord = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const egressClient = await createEgressClient();
+    const result = await egressClient.stopEgress(id);
+    console.log(`Stopping egress for ID: ${id}`);
+    res.send(result);
+  } catch (error) {
+    console.error(`Error occurred while stopping recording: ${error.message}`);
+    res.status(error.response?.status || 500).send({
+      message: 'Failed to stop recording',
+      error: error.message,
+      response: error.response?.data || null,
+    });
+  }
+};
+
+const startRecordSingleAudio = async (req, res) => {
+  const { roomName, trackId } = req.params;
+  try {
+    const { EncodedFileOutput } = await import('livekit-server-sdk');
+    const egressClient = await createEgressClient();
+    const fileName = outputFileName(roomName);
+
+    const fileOutput = new EncodedFileOutput({
+      filepath: `tmp/${fileName}.mp4`,
+    });
+
+    const info = await egressClient.startTrackEgress(roomName, fileOutput, trackId);
+    res.status(200).json({ egressId: info.egressId });
+  } catch (error) {
+    console.error('Error occurred while starting audio recording:', error);
+    res.status(500).send({ message: 'Failed to start audio recording', error: error.message });
+  }
 };
 
 module.exports = {
   startRecordComposite,
-  stopRecordComposite,
+  stopRecord,
   listEgrees,
+  startRecordSingleAudio,
 };
