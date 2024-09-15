@@ -3,6 +3,7 @@ const roomRoute = require('./room.route');
 const participantsRoute = require('./participants.route');
 const config = require('../../config/config');
 const adminRoute = require('./admin.route');
+const recorderRoute = require('./recorder.route');
 
 const router = express.Router();
 
@@ -18,6 +19,10 @@ const defaultRoutes = [
   {
     path: '/admin',
     route: adminRoute,
+  },
+  {
+    path: '/recorder',
+    route: recorderRoute,
   },
 ];
 
