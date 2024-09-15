@@ -51,6 +51,7 @@ const createToken = async (roomName, participantName, identity) => {
         canPublish: true,
         canPublishData: true,
         roomAdmin: true,
+        roomRecord: true,
       });
       roomAdmins.set(roomName, identity, participantName); // Store the admin identity
       const newAdmin = new Admin({ identity, roomName, participantName });
@@ -64,6 +65,7 @@ const createToken = async (roomName, participantName, identity) => {
           canSubscribe: true,
           canPublish: true,
           canPublishData: true,
+          roomRecord: true,
         });
       } else {
         at.addGrant({
