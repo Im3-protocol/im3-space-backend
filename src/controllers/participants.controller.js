@@ -1,4 +1,7 @@
+const NodeCache = require('node-cache');
 const config = require('../config/config');
+
+const participantsCache = new NodeCache({ stdTTL: 5 });
 
 // Helper function to create a RoomServiceClient instance
 const createRoomServiceClient = async () => {
@@ -8,9 +11,20 @@ const createRoomServiceClient = async () => {
 };
 
 const listParticipants = async (room) => {
-  const roomService = await createRoomServiceClient();
-  const res = await roomService.listParticipants(room);
-  return res;
+  let participants = participantsCache.get(`participants_${room}`);
+
+  if (!participants) {
+    const roomService = await createRoomServiceClient();
+    participants = await roomService.listParticipants(room);
+    participantsCache.set(`participants_${room}`, participants);
+    // eslint-disable-next-line no-console
+    console.log(`Fetched participants for room "${room}" from RoomServiceClient and cached.`);
+  } else {
+    // eslint-disable-next-line no-console
+    console.log(`Retrieved participants for room "${room}" from cache.`);
+  }
+
+  return participants;
 };
 
 const kickParticipants = async (roomName, identity) => {
