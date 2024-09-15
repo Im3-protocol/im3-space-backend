@@ -1,4 +1,39 @@
+const NodeCache = require('node-cache');
 const Admin = require('../models/admin.model');
+
+const adminCache = new NodeCache({ stdTTL: 5 });
+
+const getAdminsList = async (req, res) => {
+  try {
+    const { sort, room } = req.query;
+    let cacheKey;
+    let admins;
+
+    if (sort === 'all') {
+      cacheKey = 'allAdmins';
+      admins = adminCache.get(cacheKey);
+
+      if (!admins) {
+        admins = await Admin.find();
+        adminCache.set(cacheKey, admins);
+      }
+    } else if (sort === 'room' && room) {
+      cacheKey = `admins_room_${room}`;
+      admins = adminCache.get(cacheKey);
+
+      if (!admins) {
+        admins = await Admin.find({ roomName: room });
+        adminCache.set(cacheKey, admins);
+      }
+    } else {
+      return res.status(400).send('Invalid query parameters');
+    }
+
+    res.send(admins);
+  } catch (error) {
+    res.status(500).send('Internal Server Error');
+  }
+};
 
 const createAdmin = async (req, res) => {
   try {
@@ -40,4 +75,5 @@ const removeAdmin = async (req, res) => {
 module.exports = {
   createAdmin,
   removeAdmin,
+  getAdminsList,
 };
