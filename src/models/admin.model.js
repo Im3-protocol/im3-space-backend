@@ -26,6 +26,10 @@ const adminSchema = new mongoose.Schema({
   duration: {
     type: String,
   },
+  isOwner: {
+    type: Boolean,
+    required: false,
+  },
 });
 
 adminSchema.pre('save', function (next) {
