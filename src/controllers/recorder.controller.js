@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 const config = require('../config/config');
+const meetConfig = require('../utils/readMeetConfig');
 
 let egressClientInstance = null;
 
@@ -11,7 +12,10 @@ const createEgressClient = async () => {
   return egressClientInstance;
 };
 
-const outputFileName = (roomName) => {
+const outputFileName = (roomName, slugConfig) => {
+  if (slugConfig && slugConfig.record.outputName) {
+    return slugConfig.record.outputName;
+  }
   const date = new Date();
   const day = date.getDate();
   const month = date.getMonth() + 1;
@@ -31,12 +35,13 @@ const listEgrees = async (req, res) => {
 };
 
 const startRecordComposite = async (req, res) => {
-  const { roomName } = req.params;
+  const { roomName, slug } = req.params;
   const { audioOnly, videoOnly, layout } = req.body;
   try {
+    const slugConfig = await meetConfig(slug);
     const { EncodedFileOutput } = await import('livekit-server-sdk');
     const egressClient = await createEgressClient();
-    const fileName = outputFileName(roomName);
+    const fileName = outputFileName(roomName, slugConfig);
 
     const fileOutput = new EncodedFileOutput({
       filepath: `tmp/${fileName}.mp4`,
@@ -73,11 +78,12 @@ const stopRecord = async (req, res) => {
 };
 
 const startRecordSingleAudio = async (req, res) => {
-  const { roomName, trackId } = req.params;
+  const { roomName, trackId, slug } = req.params;
   try {
+    const slugConfig = await meetConfig(slug);
     const { EncodedFileOutput } = await import('livekit-server-sdk');
     const egressClient = await createEgressClient();
-    const fileName = outputFileName(roomName);
+    const fileName = outputFileName(roomName, slugConfig);
 
     const fileOutput = new EncodedFileOutput({
       filepath: `tmp/${fileName}.mp4`,
@@ -91,9 +97,21 @@ const startRecordSingleAudio = async (req, res) => {
   }
 };
 
+const recordConfig = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const slugConfig = await meetConfig(slug);
+    res.status(200).send(slugConfig.record);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   startRecordComposite,
   stopRecord,
   listEgrees,
   startRecordSingleAudio,
+  recordConfig,
 };
