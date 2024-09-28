@@ -38,5 +38,6 @@ module.exports = {
     apiKey: envVars.IM3_API_KEY,
     apiSecret: envVars.IM3_API_SECRET,
     websocketUrl: envVars.IM3_WEBSOCKET_URL,
+    apiUrl: envVars.IM3_API_URL,
   },
 };
