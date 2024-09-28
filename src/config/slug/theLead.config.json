@@ -1,0 +1,35 @@
+{  
+    "owner": "0xE7da187B65AA0588bde4e91C7195BDf3E7Dd5150",
+    "apiVersion": "1.0.0",
+    "admins" : [
+        "0xE7da187B65AA0588bde4e91C7195BDf3E7Dd5152"
+    ],
+    "whiteListParticipants" : [
+        "0xE7da187B65AA0588bde4e91C7195BDf3E7Dd5156"
+    ],
+    "url": "space.ime.live/rooms/theLead",
+    "emptyTimeout": 600,
+    "maxParticipants": 20,
+    "mintPoaps" : true,
+    "record" : {
+        "recordRoom" : true ,
+        "outputName" : "theLead",
+        "recordTypes" : [
+            "speaker",
+            "grid"
+        ]
+    }, 
+    "ui": {
+        "slug" : "theLead",
+        "privateRoom" : true,
+        "logo": "/images/im3.svg",   
+        "title" : "Parsa Bordbar",
+        "desc" : "CS & CE student passionate about Web Development, Game Design, and AI.",
+        "socials" : {
+            "x" : "https://x.com/muon_net",
+            "discord" : "https://discord.com/invite/rcK4p8g7Ce",
+            "website" : "https://github.com/ParsaBordbar",
+            "github": "https://github.com/ParsaBordbar"
+        }
+    }
+}

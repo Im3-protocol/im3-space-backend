@@ -1,0 +1,29 @@
+{   "defaultConfig" : true,
+    "apiVersion": "1.0.0",
+    "emptyTimeout": 600,
+    "maxParticipants": 20,
+    "mintPoaps" : false,
+    "record" : {
+        "recordRoom" : true ,
+        "recordTypes" : [
+            "speaker",
+            "grid",
+            "videoOnly",
+            "audioOnly",
+            "adminAudio"
+        ]
+    },
+    "ui": {
+        "title" : "IM3",
+        "privateRoom" : false,
+        "logo" : "/images/im3.svg",
+        "desc" : "Video Calls and Spaces via a Decentralized Public Network",
+        "socials" : {
+            "x" : "https://x.com/IM3_live",
+            "website" : "im3.live",
+            "discord" : "discordURL",
+            "github" : "https://github.com/Im3-protocol",
+            "youtube" : "https://www.youtube.com/@IM3Live"
+        }
+    }
+}

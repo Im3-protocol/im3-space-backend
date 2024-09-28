@@ -1,0 +1,36 @@
+{  
+    "owner": "0x3DA61734b1A82003EFb88c1D5B5f31Eafa64DfC2",
+    "apiVersion": "1.0.0",
+    "admins" : [
+        "0xE7da187B65AA0588bde4e91C7195BDf3E7Dd5156",
+        "0x273d4C6F62B79ac79F42575a6fe8Ef58764e072b",
+        "0xfA1e8231521477c649CeF88Cc5D78493Fc650eC0"
+    ],
+    "url": "space.ime.live/rooms/muon",
+    "emptyTimeout": 600,
+    "maxParticipants": 20,
+    "mintPoaps" : true,
+    "record" : {
+        "recordRoom" : true ,
+        "outputName" : "muon_room",
+        "recordTypes" : [
+            "speaker",
+            "grid",
+            "videoOnly",
+            "audioOnly"
+        ]
+    }, 
+    "ui": {
+        "slug" : "muon",
+        "privateRoom" : false,
+        "logo": "https://cdn.prod.website-files.com/614c6fa0cc868403c37c5e53/614c6fa0cc8684fa8e7c5e62_m-logo.svg",   
+        "title" : "Muon Network",
+        "desc" : "Decentralize all Off-Chain Components of your dApp",
+        "socials" : {
+            "x" : "https://x.com/muon_net",
+            "discord" : "https://discord.com/invite/rcK4p8g7Ce",
+            "website" : "https://www.muon.net/",
+            "github": "https://github.com/muon-protocol"
+        }
+    }
+}
